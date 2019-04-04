@@ -1,6 +1,6 @@
 # 机器学习研究
 ## 深度学习
-### Keras
+### Keras(整理自《python深度学习》)
 代码列表：
 * [mnist手写数字分类问题](https://github.com/ubwshook/MachineLearning/blob/master/keras/mnist_relu.py)
 * [**二分类问题**:imdb电影评论分类](https://github.com/ubwshook/MachineLearning/blob/master/keras/imdb.py)
