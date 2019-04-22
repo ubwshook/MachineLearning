@@ -1,3 +1,6 @@
+"""
+MNIST手写数字问题的卷积神经网络解决方案
+"""
 from keras import layers
 from keras import models
 from keras.datasets import mnist

@@ -1,3 +1,7 @@
+"""
+波士顿房价预测，数据集是20世纪70年代中期波士顿郊区房屋的数据，包含犯罪率、当地房产税等数据特征。
+我们的任务是预测郊区房价的中位数。
+"""
 from keras.datasets import boston_housing
 import numpy as np
 from keras import models
