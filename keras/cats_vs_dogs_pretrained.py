@@ -73,6 +73,11 @@ train_features, train_labels = extract_features(train_dir, 2000)
 validation_features, validation_labels = extract_features(validation_dir, 1000)
 test_features, test_labels = extract_features(test_dir, 1000)
 
+""" 输入到分类器之前，将数据展平 """
+train_features = np.reshape(train_features, (2000, 4 * 4 * 512))
+validation_features = np.reshape(validation_features, (2000, 4 * 4 * 512))
+test_features = np.reshape(test_features, (2000, 4 * 4 * 512))
+
 """ 构建网络，训练网络 """
 model = bulid_dropout_model()
 history = model.fit(train_features, train_labels, epochs=30, batch_size=20,
