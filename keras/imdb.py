@@ -21,6 +21,7 @@ def load_local(num_words=None):
     oov_char = 2
     index_from = 3
     with np.load('imdb.npz') as f:
+        f.allow_pickle = True
         x_train, labels_train = f['x_train'], f['y_train']
         x_test, labels_test = f['x_test'], f['y_test']
 

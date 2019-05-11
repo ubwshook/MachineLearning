@@ -16,9 +16,9 @@ def create_fold():
     """
     将原始数据中的图片分成训练集、验证集、测试集，并分文件夹存放。
     """
-    original_dataset_dir = 'D:\\git_code\\data\\dogs-vs-cats\\train'  # 原始数据的目录
+    original_dataset_dir = 'E:\\git_code\\data\\dogs-vs-cats\\train'  # 原始数据的目录
 
-    base_dir = 'D:\\git_code\\data\\cats_and_dogs_small'  # 从原始数据中分裂出来的笑的数据集
+    base_dir = 'E:\\git_code\\data\\cats_and_dogs_small'  # 从原始数据中分裂出来的笑的数据集
     if not os.path.exists(base_dir):
         os.mkdir(base_dir)
 

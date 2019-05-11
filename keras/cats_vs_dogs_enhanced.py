@@ -1,8 +1,11 @@
-from cats_vs_dogs import create_fold, bulid_model, show_results
+from cats_vs_dogs import create_fold, show_results
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing import image
 import os
 import matplotlib.pyplot as plt
+from keras import layers
+from keras import models
+from keras import optimizers
 
 
 def show_enhanced_image(datagen, image_dir):
@@ -28,8 +31,32 @@ def show_enhanced_image(datagen, image_dir):
 
     plt.show()
 
+def bulid_model():
+    """
+    构建网络：使用Conv2D和MaxPooling2D层交叠构成。
+    Flatten层将3D输出展平到1D
+    二分类问题最终使用sigmod激活
+    """
+    model = models.Sequential()
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(150, 150, 3)))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Flatten())
+    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(512, activation='relu'))
+    model.add(layers.Dense(1, activation='sigmoid'))
 
-if __name__=="__main__":
+    model.compile(loss='binary_crossentropy', optimizer=optimizers.RMSprop(lr=1e-4), metrics=['acc'])
+
+    return model
+
+
+if __name__ == "__main__":
     """ 创建训练和验证集的目录 """
     train_dir, validation_dir, test_dir = create_fold()
     train_cats_dir = os.path.join(train_dir, 'cats')
