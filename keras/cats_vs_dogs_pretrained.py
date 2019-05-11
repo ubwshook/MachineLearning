@@ -23,6 +23,7 @@ WEIGHTS_PATH_NO_TOP = 'E:\\git_code\\MachineLearning\\keras\\vgg16_weights_tf_di
 
 conv_base = VGG16(weights=WEIGHTS_PATH_NO_TOP, include_top=False, input_shape=(150, 150, 3))
 
+
 def extract_features(directory, sample_count):
     """
     此函数使用VGG16卷积基对图片进行预处理，提取特征
@@ -72,11 +73,6 @@ train_dir, validation_dir, test_dir = create_fold()
 train_features, train_labels = extract_features(train_dir, 2000)
 validation_features, validation_labels = extract_features(validation_dir, 1000)
 test_features, test_labels = extract_features(test_dir, 1000)
-
-""" 输入到分类器之前，将数据展平 """
-train_features = np.reshape(train_features, (2000, 4 * 4 * 512))
-validation_features = np.reshape(validation_features, (2000, 4 * 4 * 512))
-test_features = np.reshape(test_features, (2000, 4 * 4 * 512))
 
 """ 构建网络，训练网络 """
 model = bulid_dropout_model()
