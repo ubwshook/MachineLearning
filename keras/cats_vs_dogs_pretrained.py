@@ -21,6 +21,7 @@ WEIGHTS_PATH_NO_TOP = ('https://github.com/fchollet/deep-learning-models/'
 """
 WEIGHTS_PATH_NO_TOP = 'D:\\git_code\\MachineLearning\\keras\\vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
 
+conv_base = VGG16(weights=WEIGHTS_PATH_NO_TOP, include_top=False, input_shape=(150, 150, 3))
 
 def extract_features(directory, sample_count):
     """
@@ -30,7 +31,6 @@ def extract_features(directory, sample_count):
     :return:
     """
 
-    conv_base = VGG16(weights=WEIGHTS_PATH_NO_TOP, include_top=False, input_shape=(150, 150, 3))
     batch_size = 20
     datagen = ImageDataGenerator(rescale=1. / 255)
 
@@ -79,3 +79,5 @@ history = model.fit(train_features, train_labels, epochs=30, batch_size=20,
                     validation_data=(validation_features, validation_labels))
 
 show_results(history)
+
+

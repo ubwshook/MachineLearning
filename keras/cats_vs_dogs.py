@@ -128,10 +128,10 @@ def create_generator(dir):
     :param dir: 数据所在的目录
     :return: 返回一个生成器
     """
-    dir_datagen = ImageDataGenerator(rescale=1. / 255)
-    generator = dir_datagen.flow_from_directory(dir, target_size=(150, 150),
-                                                        batch_size=20,
-                                                        class_mode='binary')
+    dir_datagen = ImageDataGenerator(rescale=1. / 255)  # 将所有图像乘以1/255缩放
+    generator = dir_datagen.flow_from_directory(dir, target_size=(150, 150),  # 图片大小调整为150 * 150
+                                                batch_size=20,
+                                                class_mode='binary')  # 使用二进制
     return generator
 
 
