@@ -8,6 +8,7 @@ from keras import optimizers
 from keras.preprocessing.image import ImageDataGenerator
 from keras.applications import VGG16
 from cats_vs_dogs import create_fold, show_results
+import matplotlib.pyplot as plt
 
 
 """ 
@@ -35,22 +36,91 @@ def build_model():
     return model
 
 
-train_dir, validation_dir, test_dir = create_fold()
+def smooth_curve(points, factor=0.8):
+    """
+    平滑数据点位，使用指数移动平均值
+    :param points: 数据点
+    :param factor: 平移因子
+    :return: 平滑后的数据点
+    """
+    smoothed_points = []
+    for point in points:
+        if smoothed_points:
+            previous = smoothed_points[-1]
+            smoothed_points.append(previous * factor + point * (1 - factor))
+        else:
+            smoothed_points.append(point)
 
-""" 数据增强 """
-train_datagen = ImageDataGenerator(rescale=1./255, rotation_range=40, width_shift_range=0.2, height_shift_range=0.2,
-                                   shear_range=0.2, zoom_range=0.2, horizontal_flip=True, fill_mode='nearest')
-test_datagen = ImageDataGenerator(rescale=1./255)
+    return smoothed_points
 
-train_generator = train_datagen.flow_from_directory(train_dir, target_size=(150, 150), batch_size=20, class_mode='binary')
-validation_generator = test_datagen.flow_from_directory(validation_dir, target_size=(150, 150), batch_size=20,
-                                                        class_mode='binary')
 
-""" 构建、编译、训练网络 """
-model = build_model()
+def plot_result_curve(history):
+    """
+    绘制平滑后的精度和损失图像
+    :param history: 训练结果
+    :return: 无
+    """
+    acc = history.history['acc']
+    val_acc = history.history['val_acc']
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+    epochs = range(1, len(acc) + 1)
 
-model.compile(loss='binary_crossentropy', optimizer=optimizers.RMSprop(lr=2e-5), metrics=['acc'])
-history = model.fit_generator(train_generator, steps_per_epoch=100, epochs=30, validation_data=validation_generator,
-                              validation_steps=50)
-""" 显示训练结果 """
-show_results(history)
+    plt.plot(epochs,
+             smooth_curve(acc), 'bo', label='Smoothed training acc')
+    plt.plot(epochs,
+             smooth_curve(val_acc), 'b', label='Smoothed validation acc')
+    plt.title('Training and validation accuracy')
+    plt.legend()
+    plt.figure()
+    plt.plot(epochs,
+             smooth_curve(loss), 'bo', label='Smoothed training loss')
+    plt.plot(epochs,
+             smooth_curve(val_loss), 'b', label='Smoothed validation loss')
+    plt.title('Training and validation loss')
+    plt.legend()
+    plt.show()
+
+
+if __name__ == "__main__":
+    fine_tunning = True
+    train_dir, validation_dir, test_dir = create_fold()
+    conv_base = VGG16(weights=WEIGHTS_PATH_NO_TOP, include_top=False, input_shape=(150, 150, 3))
+
+    """ 数据增强 """
+    train_datagen = ImageDataGenerator(rescale=1./255, rotation_range=40, width_shift_range=0.2, height_shift_range=0.2,
+                                       shear_range=0.2, zoom_range=0.2, horizontal_flip=True, fill_mode='nearest')
+    test_datagen = ImageDataGenerator(rescale=1./255)
+
+    train_generator = train_datagen.flow_from_directory(train_dir, target_size=(150, 150), batch_size=20, class_mode='binary')
+    validation_generator = test_datagen.flow_from_directory(validation_dir, target_size=(150, 150), batch_size=20,
+                                                            class_mode='binary')
+
+    """ 构建、编译、训练网络 """
+    model = build_model()
+
+    model.compile(loss='binary_crossentropy', optimizer=optimizers.RMSprop(lr=2e-5), metrics=['acc'])
+    history = model.fit_generator(train_generator, steps_per_epoch=100, epochs=30, validation_data=validation_generator,
+                                  validation_steps=50)
+
+    if fine_tunning:
+        conv_base.trainable = True
+        set_trainable = False
+        for layer in conv_base.layers:
+            if layer.name == 'block5_conv1':
+                set_trainable = True
+            if set_trainable:
+                layer.trainable = True
+            else:
+                layer.trainable = False
+
+        model.compile(loss='binary_crossentropy', optimizer=optimizers.RMSprop(lr=1e-5), metrics=['acc'])
+        history = model.fit_generator(train_generator, steps_per_epoch=100, epochs=100,
+                                      validation_data=validation_generator,
+                                      validation_steps=50)
+
+    """ 显示训练结果 """
+    if fine_tunning:
+        plot_result_curve(history)
+    else:
+        show_results(history)
