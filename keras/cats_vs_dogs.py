@@ -152,7 +152,8 @@ def show_results(history):
     plt.legend()
     plt.show()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     """ 创建训练和验证集的目录 """
     train_dir, validation_dir, test_dir = create_fold()
     """ 构建网络 """

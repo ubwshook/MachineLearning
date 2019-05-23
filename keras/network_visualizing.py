@@ -1,3 +1,9 @@
+"""
+三种可视化卷积神经网络的方法:
+1.可视化卷积神经网络的中间输出
+2.可视化卷积神经网络的过滤器
+3.可视化图像中类激活的热力图
+"""
 from keras import models
 from keras.preprocessing import image
 import numpy as np

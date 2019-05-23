@@ -99,44 +99,45 @@ def show_acc(history):
     plt.show()
 
 
-"""
-@加载数据集, num_words=10000是仅保留训练数据中前10000个最常出现的单词
-本应该使用: (train_data, train_labels), (test_data, test_labels) = imdb.load_data(num_words=10000)
-但因为下载地址是国外网站经常断线，所以自己下载数据文件后，用自己的load_local方式加载数据
-"""
-(train_data, train_labels), (test_data, test_labels) = load_local(num_words=10000)
+if __name__=="__main__":
+    """
+    @加载数据集, num_words=10000是仅保留训练数据中前10000个最常出现的单词
+    本应该使用: (train_data, train_labels), (test_data, test_labels) = imdb.load_data(num_words=10000)
+    但因为下载地址是国外网站经常断线，所以自己下载数据文件后，用自己的load_local方式加载数据
+    """
+    (train_data, train_labels), (test_data, test_labels) = load_local(num_words=10000)
 
-x_train = vectorize_sequences(train_data)
-x_test = vectorize_sequences(test_data)
+    x_train = vectorize_sequences(train_data)
+    x_test = vectorize_sequences(test_data)
 
-"""把标签向量化"""
-y_train = np.asarray(train_labels).astype('float32')
-y_test = np.asarray(test_labels).astype('float32')
+    """把标签向量化"""
+    y_train = np.asarray(train_labels).astype('float32')
+    y_test = np.asarray(test_labels).astype('float32')
 
-""" 构建神经网络 
-有两个中间层，每层16个隐藏单元
-最后输出层使用sigmoid激活函数
-"""
-model = models.Sequential()
-model.add(layers.Dense(16, activation='relu', input_shape=(10000,)))
-model.add(layers.Dense(16, activation='relu'))
-model.add(layers.Dense(1, activation='sigmoid'))
+    """ 构建神经网络 
+    有两个中间层，每层16个隐藏单元
+    最后输出层使用sigmoid激活函数
+    """
+    model = models.Sequential()
+    model.add(layers.Dense(16, activation='relu', input_shape=(10000,)))
+    model.add(layers.Dense(16, activation='relu'))
+    model.add(layers.Dense(1, activation='sigmoid'))
 
-""" 编译网络 
-因为是二分类问题，所以使用二元交叉熵函数作为损失函数，评价标准还是准确性
-"""
-model.compile(optimizer=optimizers.RMSprop(lr=0.001), loss=losses.binary_crossentropy, metrics=[metrics.binary_accuracy])
+    """ 编译网络 
+    因为是二分类问题，所以使用二元交叉熵函数作为损失函数，评价标准还是准确性
+    """
+    model.compile(optimizer=optimizers.RMSprop(lr=0.001), loss=losses.binary_crossentropy, metrics=[metrics.binary_accuracy])
 
-"""留出一部分验证集"""
-x_val = x_train[:10000]
-partial_x_train = x_train[10000:]
+    """留出一部分验证集"""
+    x_val = x_train[:10000]
+    partial_x_train = x_train[10000:]
 
-y_val = y_train[:10000]
-partial_y_train = y_train[10000:]
+    y_val = y_train[:10000]
+    partial_y_train = y_train[10000:]
 
-"""训练网络"""
-history = model.fit(partial_x_train, partial_y_train, epochs=20, batch_size=512, validation_data=(x_val, y_val))
+    """训练网络"""
+    history = model.fit(partial_x_train, partial_y_train, epochs=20, batch_size=512, validation_data=(x_val, y_val))
 
-"""画出评价曲线"""
-show_loss(history)
-show_acc(history)
+    """画出评价曲线"""
+    show_loss(history)
+    show_acc(history)
