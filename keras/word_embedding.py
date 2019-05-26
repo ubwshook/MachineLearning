@@ -167,7 +167,7 @@ def pretrained_embedding():
 
 
 if __name__ == '__main__':
-    #simple_embedding()
+    simple_embedding()
 
     maxlen = 100
     training_samples = 200
