@@ -179,6 +179,22 @@ def train_bidirectional_gru(float_data):
     plt_loss(history)
 
 
+def convert_rnn(float_data):
+    model = Sequential()
+    model.add(layers.Conv1D(32, 5, activation='relu',
+    input_shape=(None, float_data.shape[-1])))
+    model.add(layers.MaxPooling1D(3))
+    model.add(layers.Conv1D(32, 5, activation='relu'))
+    model.add(layers.MaxPooling1D(3))
+    model.add(layers.Conv1D(32, 5, activation='relu'))
+    model.add(layers.GlobalMaxPooling1D())
+    model.add(layers.Dense(1))
+    model.compile(optimizer=RMSprop(), loss='mae')
+    history = model.fit_generator(train_gen, steps_per_epoch=500, epochs=20,
+                                  validation_data=val_gen, validation_steps=VAL_STEPS)
+    plt_loss(history)
+
+
 if __name__ == "__main__":
     float_data, std = get_temperature_data()  # 获取处理后的数据和标准差
     LOOK_BACK = 1440  # 输入数据应该包括过去的多少个时间步
@@ -198,14 +214,15 @@ if __name__ == "__main__":
 
     show_sequence(float_data)
 
-    #evaluate_naive_method()  # 计算基准误差
-    #celsius_mae = 0.29 * std[1]  # 温度的绝对偏差
+    evaluate_naive_method()  # 计算基准误差
+    celsius_mae = 0.29 * std[1]  # 温度的绝对偏差
 
-    #train_dense(float_data)  # 密集连接网络预测温度
-    #train_gru(float_data)  # 单层GRU网络进行训练
-    #train_gru_dropout(float_data)  # 带有dropout正则化得GRU
+    train_dense(float_data)  # 密集连接网络预测温度
+    train_gru(float_data)  # 单层GRU网络进行训练
+    train_gru_dropout(float_data)  # 带有dropout正则化得GRU
     train_stacking_gru(float_data)  # 堆叠gru训练
     train_bidirectional_gru(float_data)  # 双向GRU训练
+    convert_rnn(float_data)
 
 
 
