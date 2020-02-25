@@ -1,4 +1,8 @@
 # 机器学习研究
+欢迎关注我的公众号：
+
+![小可哥哥V](https://upload-images.jianshu.io/upload_images/11618109-67aaad38a3ae2421.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 ## 深度学习
 ### Keras(整理自《python深度学习》)
 #### wiki列表
